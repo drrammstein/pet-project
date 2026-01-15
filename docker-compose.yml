@@ -35,6 +35,16 @@ services:
       timeout: 10s
       retries: 5
 
+  seq:
+    image: datalust/seq:latest
+    container_name: petproject-seq
+    ports:
+      - "5341:5341"   # HTTP порт для приёма логов
+      - "8081:80"     # Web UI
+    environment:
+      - ACCEPT_EULA=Y
+      
 volumes:
   postgres_data:
   rabbitmq_data:
+  
