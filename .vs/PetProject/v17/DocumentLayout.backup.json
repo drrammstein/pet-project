@@ -7,6 +7,14 @@
       "RelativeMoniker": "D:0:0:{321610DD-5BA7-4A6F-ACAD-B38D6A9E3E04}|src\\WebApi\\WebApi.csproj|solutionrelative:src\\webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{321610DD-5BA7-4A6F-ACAD-B38D6A9E3E04}|src\\WebApi\\WebApi.csproj|d:\\myprojects\\pet-project\\src\\webapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{321610DD-5BA7-4A6F-ACAD-B38D6A9E3E04}|src\\WebApi\\WebApi.csproj|solutionrelative:src\\webapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409D8432-0587-4E5B-B473-CC50A86C4F41}|src\\Shared\\Shared.csproj|d:\\myprojects\\pet-project\\src\\shared\\telemetry\\telemetryextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409D8432-0587-4E5B-B473-CC50A86C4F41}|src\\Shared\\Shared.csproj|solutionrelative:src\\shared\\telemetry\\telemetryextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{409D8432-0587-4E5B-B473-CC50A86C4F41}|src\\Shared\\Shared.csproj|d:\\myprojects\\pet-project\\src\\shared\\logging\\loggingextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{409D8432-0587-4E5B-B473-CC50A86C4F41}|src\\Shared\\Shared.csproj|solutionrelative:src\\shared\\logging\\loggingextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -18,11 +26,36 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\MyProjects\\pet-project\\src\\WebApi\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "src\\WebApi\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\MyProjects\\pet-project\\src\\WebApi\\Properties\\launchSettings.json",
+              "RelativeToolTip": "src\\WebApi\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-15T19:35:29.908Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TelemetryExtensions.cs",
+              "DocumentMoniker": "D:\\MyProjects\\pet-project\\src\\Shared\\Telemetry\\TelemetryExtensions.cs",
+              "RelativeDocumentMoniker": "src\\Shared\\Telemetry\\TelemetryExtensions.cs",
+              "ToolTip": "D:\\MyProjects\\pet-project\\src\\Shared\\Telemetry\\TelemetryExtensions.cs",
+              "RelativeToolTip": "src\\Shared\\Telemetry\\TelemetryExtensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-15T18:17:22.111Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "LoggingExtensions.cs",
               "DocumentMoniker": "D:\\MyProjects\\pet-project\\src\\Shared\\Logging\\LoggingExtensions.cs",
               "RelativeDocumentMoniker": "src\\Shared\\Logging\\LoggingExtensions.cs",
@@ -30,8 +63,7 @@
               "RelativeToolTip": "src\\Shared\\Logging\\LoggingExtensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-15T18:06:02.11Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-15T18:06:02.11Z"
             },
             {
               "$type": "Document",
@@ -41,7 +73,7 @@
               "RelativeDocumentMoniker": "src\\WebApi\\Program.cs",
               "ToolTip": "D:\\MyProjects\\pet-project\\src\\WebApi\\Program.cs",
               "RelativeToolTip": "src\\WebApi\\Program.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAmwGEAAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-15T17:45:01.159Z",
               "EditorCaption": ""
