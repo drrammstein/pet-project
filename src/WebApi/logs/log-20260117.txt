@@ -1,0 +1,7 @@
+2026-01-17 13:01:34.470 +03:00 [ERR] An error occurred using the connection to database '' on server ''.
+2026-01-17 13:03:29.570 +03:00 [ERR] An error occurred using the connection to database '' on server ''.
+2026-01-17 13:06:19.523 +03:00 [ERR] An error occurred using the connection to database 'petprojectdb' on server 'tcp://localhost:5432'.
+2026-01-17 13:07:04.091 +03:00 [ERR] Failed executing DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
