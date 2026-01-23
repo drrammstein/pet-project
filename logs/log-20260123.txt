@@ -1,0 +1,4 @@
+2026-01-23 03:57:45.983 +00:00 [WRN] Overriding HTTP_PORTS '8080' and HTTPS_PORTS ''. Binding to values defined by URLS instead 'http://+:80'.
+2026-01-23 03:59:20.462 +00:00 [WRN] Failed to determine the https port for redirect.
+2026-01-23 03:59:39.790 +00:00 [INF] GET /api/value: Retrived value 'Initial value from database' from daatabase
+2026-01-23 04:00:05.556 +00:00 [INF] Test endpoint called at "2026-01-23T04:00:05.5565823Z"

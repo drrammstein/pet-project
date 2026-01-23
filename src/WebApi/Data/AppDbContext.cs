@@ -12,7 +12,7 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AppData>().HasData(
-            new AppData { Id = 1, Key = "main_value", Value = "Initial value from database", UpdatedAt = DateTime.UtcNow }
+            new AppData { Id = 1, Key = "main_value", Value = "Initial value from database", UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
             );
     }
 }
