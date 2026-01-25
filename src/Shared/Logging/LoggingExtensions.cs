@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 
@@ -26,5 +27,15 @@ public static class LoggingExtensions
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.Seq("http://localhost:5341");
         });
+    }
+    public static IHostApplicationBuilder UseSharedSerilog(this IHostApplicationBuilder builder)
+    {
+        builder.Logging.ClearProviders();
+        builder.Logging.AddSerilog(new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.Console()
+            .CreateLogger());
+
+        return builder;
     }
 }

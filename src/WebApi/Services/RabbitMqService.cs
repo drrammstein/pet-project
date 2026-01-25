@@ -12,66 +12,104 @@ public interface IRabbitMqService
 
 public class RabbitMqService : IRabbitMqService, IAsyncDisposable
 {
-    private readonly IConnection _connection;
-    private readonly IChannel _channel;
+    private readonly Lazy<Task<IConnection>> _connection;
+    private readonly Lazy<Task<IChannel>> _channel;
     private readonly IConfiguration _configuration;
     private readonly ILogger<RabbitMqService> _logger;
+    private string QueueName => _configuration["RabbitMQ:QueueName"]!;
 
-    private RabbitMqService(IConnection connection, IChannel channel, IConfiguration configuration, ILogger<RabbitMqService> logger)
+    public RabbitMqService(IConfiguration configuration, ILogger<RabbitMqService> logger)
     {
-        _connection = connection;
-        _channel = channel;
         _configuration = configuration;
         _logger = logger;
-    }
 
-    public static async Task<RabbitMqService> CreateAsync(IConfiguration configuration, ILogger<RabbitMqService> logger)
-    {
-        var factory = new ConnectionFactory
+        _connection = new Lazy<Task<IConnection>>(async () =>
         {
-            HostName = configuration["RabbitMQ:Host"],
-            Port = int.Parse(configuration["RabbitMQ:Port"]!),
-            UserName = configuration["RabbitMQ:Username"],
-            Password = configuration["RabbitMQ:Password"]
-        };
+            _logger.LogInformation("Initializing RabbitMQ connection...");
 
-        var connection = await factory.CreateConnectionAsync();
-        var channel = await connection.CreateChannelAsync();
+            var factory = new ConnectionFactory
+            {
+                HostName = _configuration["RabbitMQ:Host"],
+                Port = int.Parse(_configuration["RabbitMQ:Port"]!),
+                UserName = _configuration["RabbitMQ:Username"],
+                Password = _configuration["RabbitMQ:Password"]
+            };
 
-        await channel.QueueDeclareAsync(
-            queue: configuration["RabbitMQ:QueueName"]!,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null);
+            var connection = await factory.CreateConnectionAsync();
+            _logger.LogInformation("RabbitMQ connection established");
 
-        logger.LogInformation("RabbitMQ service initialized");
+            return connection;
+        });
 
-        return new RabbitMqService(connection, channel, configuration, logger);
+        _channel = new Lazy<Task<IChannel>>(async () =>
+        {
+            _logger.LogInformation("Initializing RabbitMQ channel...");
+
+            var connection = await _connection.Value;
+            var channel = await connection.CreateChannelAsync();
+
+            await channel.QueueDeclareAsync(
+                queue: QueueName,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            _logger.LogInformation("RabbitMQ channel initialized for queue: {QueueName}", QueueName);
+
+            return channel;
+        });
     }
 
     public async Task SendMessageAsync(UpdateValueMessage message)
     {
-        var json = JsonSerializer.Serialize(message);
-        var body = Encoding.UTF8.GetBytes(json);
+        try
+        {
+            var channel = await _channel.Value;
 
-        await _channel.BasicPublishAsync(
-            exchange: "",
-            routingKey: _configuration["RabbitMQ:QueueName"]!,
-            body: body);
+            var json = JsonSerializer.Serialize(message);
+            var body = Encoding.UTF8.GetBytes(json);
 
-        _logger.LogInformation("Message sent to RabbitMQ: {@Message}", message);
+            await channel.BasicPublishAsync(
+                exchange: "",
+                routingKey: QueueName,
+                body: body);
+
+            _logger.LogInformation("Message sent to RabbitMQ queue '{QueueName}': {@Message}",
+                QueueName, message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending message to RabbitMQ: {ErrorMessage}", ex.Message);
+            throw;
+        }
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_channel != null)
-            await _channel.CloseAsync();
+        _logger.LogInformation("Disposing RabbitMQ service...");
 
-        if (_connection != null)
-            await _connection.CloseAsync();
+        try
+        {
+            if (_channel.IsValueCreated)
+            {
+                var channel = await _channel.Value;
+                await channel.CloseAsync();
+                channel.Dispose();
+            }
 
-        _channel?.Dispose();
-        _connection?.Dispose();
+            if (_connection.IsValueCreated)
+            {
+                var connection = await _connection.Value;
+                await connection.CloseAsync();
+                connection.Dispose();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error disposing RabbitMQ service");
+        }
+
+        GC.SuppressFinalize(this);
     }
 }

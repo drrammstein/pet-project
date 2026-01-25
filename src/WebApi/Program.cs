@@ -10,9 +10,7 @@ using WebApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSharedSerilog();
-
 builder.Services.AddHealthChecks();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -20,6 +18,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+        Console.WriteLine("Database migrations applied successfully");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+    }
+}
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -66,7 +79,7 @@ app.MapGet("/api/value", async (AppDbContext context) =>
     .WithName("GetValue")
     .WithOpenApi();
 
-app.MapPost("/api/value", async (UpdateValueRequest request,
+app.MapPost("/api/updateValue", async (UpdateValueRequest request,
     AppDbContext context,
     IRabbitMqService rabbitMqService) =>
 {
@@ -88,11 +101,11 @@ app.MapPost("/api/value", async (UpdateValueRequest request,
         RequestedAt = DateTime.UtcNow
     };
 
-    rabbitMqService.SendMessage(message);
+    await rabbitMqService.SendMessageAsync(message);
 
-    Log.Information("POST /api/value: Sent update request to RabbitMQ. New value: {NewValue}", request.NewValue);
+    Log.Information("POST /api/updateValue: Sent update request to RabbitMQ. New value: {NewValue}", request.NewValue);
 
-    return Results.Accepted("/api/value", new
+    return Results.Accepted("/api/updateValue", new
     {
         Message = "Update request accepted and sent to queue",
         RequestId = Guid.NewGuid(),
@@ -103,6 +116,17 @@ app.MapPost("/api/value", async (UpdateValueRequest request,
 })
     .WithName("UpdateValue")
     .WithOpenApi();
+
+app.MapPost("/api/simple-test", (string testValue) =>
+{
+    return Results.Ok(new
+    {
+        message = "Simple test works!",
+        value = testValue
+    });
+})
+.WithName("SimpleTest")
+.WithOpenApi();
 
 if (app.Environment.IsDevelopment())
 {

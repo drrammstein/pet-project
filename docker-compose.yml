@@ -58,6 +58,28 @@ services:
       - ./src/WebApi/appsettings.Development.json:/app/appsettings.Development.json:ro  # Для конфигурации
     restart: unless-stopped
 
+  worker:
+    build:
+      context: .
+      dockerfile: src/WorkerService/Dockerfile
+    container_name: petproject-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=petprojectdb;Username=admin;Password=SecurePassword123!
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__Username=admin
+      - RabbitMQ__Password=SecurePassword123!
+      - RabbitMQ__QueueName=update-value-queue
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   rabbitmq_data:
