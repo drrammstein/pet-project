@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d petprojectdb"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,8 +54,14 @@ services:
       - RabbitMQ__Password=SecurePassword123!
       - RabbitMQ__QueueName=update-value-queue
     volumes:
-      - ./logs:/app/logs  # Для доступа к логам с хоста
-      - ./src/WebApi/appsettings.Development.json:/app/appsettings.Development.json:ro  # Для конфигурации
+      - ./logs:/app/logs
+      - ./src/WebApi/appsettings.Development.json:/app/appsettings.Development.json:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: unless-stopped
 
   worker:
@@ -78,6 +84,7 @@ services:
       - RabbitMQ__QueueName=update-value-queue
     volumes:
       - ./logs:/app/logs
+      - ./src/WorkerService/appsettings.json:/app/appsettings.json:ro
     restart: unless-stopped
 
 volumes:

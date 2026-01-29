@@ -1,17 +1,28 @@
-FROM mcr.microsoft.com/dotnet/runtime:9.0 AS base
-WORKDIR /app
-
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["src/WorkerService/WorkerService.csproj", "WorkerService/"]
-COPY ["src/Shared/Shared.csproj", "Shared/"]
-RUN dotnet restore "WorkerService/WorkerService.csproj"
+
+# Copy project files
+COPY ["src/WorkerService/WorkerService.csproj", "src/WorkerService/"]
+COPY ["src/Shared/Shared.csproj", "src/Shared/"]
+RUN dotnet restore "src/WorkerService/WorkerService.csproj"
+
+# Copy everything and build
 COPY . .
-WORKDIR "/src/WorkerService"
-RUN dotnet publish -c Release -o /app/publish
+WORKDIR "/src/src/WorkerService"
+RUN dotnet build "WorkerService.csproj" -c Release -o /app/build
 
-FROM base AS final
+# Publish stage
+FROM build AS publish
+RUN dotnet publish "WorkerService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/runtime:9.0-bookworm-slim AS final
 WORKDIR /app
-COPY --from=build /app/publish .
 
+# Create non-root user
+RUN adduser --disabled-password --home /app --gecos "" appuser
+USER appuser
+
+COPY --from=publish --chown=appuser:appuser /app/publish .
 ENTRYPOINT ["dotnet", "WorkerService.dll"]

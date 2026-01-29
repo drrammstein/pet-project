@@ -13,25 +13,25 @@ builder.Host.UseSharedSerilog();
 builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        dbContext.Database.Migrate();
-        Console.WriteLine("Database migrations applied successfully");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error applying migrations: {ex.Message}");
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    try
+//    {
+//        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//        dbContext.Database.Migrate();
+//        Console.WriteLine("Database migrations applied successfully");
+//    }
+//    catch (Exception ex)
+//    {
+//        Console.WriteLine($"Error applying migrations: {ex.Message}");
+//    }
+//}
 
 
 if (app.Environment.IsDevelopment())
