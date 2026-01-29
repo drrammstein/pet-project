@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Shared.Contracts;
@@ -13,25 +14,25 @@ builder.Host.UseSharedSerilog();
 builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
 var app = builder.Build();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    try
-//    {
-//        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//        dbContext.Database.Migrate();
-//        Console.WriteLine("Database migrations applied successfully");
-//    }
-//    catch (Exception ex)
-//    {
-//        Console.WriteLine($"Error applying migrations: {ex.Message}");
-//    }
-//}
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+        Console.WriteLine("Database migrations applied successfully");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+    }
+}
 
 
 if (app.Environment.IsDevelopment())
@@ -58,7 +59,7 @@ app.MapGet("/api/test", () =>
 .WithName("TestEndpoint")
 .WithOpenApi();
 
-app.MapGet("/api/value", async (AppDbContext context) =>
+app.MapGet("/api/value", async ([FromServices] AppDbContext context) =>
 {
     var data = await context.AppData.FirstOrDefaultAsync(d => d.Key == "main_value");
 
@@ -66,7 +67,7 @@ app.MapGet("/api/value", async (AppDbContext context) =>
     {
         return Results.NotFound("Value not found in database");
     }
-    Log.Information("GET /api/value: Retrived value '{Value}' from daatabase", data.Value);
+    Log.Information("GET /api/value: Retrieved value '{Value}' from database", data.Value);
 
     return Results.Ok(new
     {
@@ -76,12 +77,12 @@ app.MapGet("/api/value", async (AppDbContext context) =>
         data.UpdatedAt
     });
 })
-    .WithName("GetValue")
-    .WithOpenApi();
+.WithName("GetValue")
+.WithOpenApi();
 
 app.MapPost("/api/updateValue", async (UpdateValueRequest request,
-    AppDbContext context,
-    IRabbitMqService rabbitMqService) =>
+    [FromServices] AppDbContext context,
+    [FromServices] IRabbitMqService rabbitMqService) =>
 {
     if (string.IsNullOrWhiteSpace(request.NewValue))
     {
@@ -114,8 +115,8 @@ app.MapPost("/api/updateValue", async (UpdateValueRequest request,
         Timestamp = DateTime.UtcNow
     });
 })
-    .WithName("UpdateValue")
-    .WithOpenApi();
+.WithName("UpdateValue")
+.WithOpenApi();
 
 app.MapPost("/api/simple-test", (string testValue) =>
 {
