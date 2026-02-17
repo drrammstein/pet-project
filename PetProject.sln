@@ -40,6 +40,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "frontend", "src\frontend\",
 		SlnRelativePath = "src\frontend\"
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UsersService", "UsersService", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,6 +148,7 @@ Global
 		{17B850F7-4813-43A0-B236-4A40A62C8E7A} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{409D8432-0587-4E5B-B473-CC50A86C4F41} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{EF000864-7959-685D-665E-F771329665E4} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1EC98AE5-1C5A-4EB7-A8E7-9600D6870CD3}
